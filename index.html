@@ -21,7 +21,7 @@
     header {
       display: flex;
       justify-content: space-between; /* Distribuye el espacio entre los elementos */
-      align-items: center;
+      align-items: baseline; /* <-- ¡CAMBIO CLAVE AQUÍ! Alinea los elementos por su línea de base */
       padding: 1.5rem 2rem; /* Padding para desktop */
       background: #f9f9f9;
       position: sticky;
@@ -53,12 +53,13 @@
       flex-shrink: 0; /* Evita que los enlaces se encojan si hay poco espacio */
     }
 
+    /* Estos márgenes automáticos ya no son tan estrictamente necesarios con baseline, pero pueden ayudar a la distribución */
     .nav-links:first-child {
-      margin-right: auto; /* Empuja el título hacia el centro desde la izquierda */
+      /* margin-right: auto; */
     }
 
     .nav-links:last-child {
-      margin-left: auto; /* Empuja el título hacia el centro desde la derecha */
+      /* margin-left: auto; */
     }
 
     .nav-links a {
