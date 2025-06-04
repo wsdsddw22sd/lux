@@ -54,11 +54,30 @@
     }
 
     .content {
-      max-width: 700px;
-      margin: 6rem 4rem 4rem auto;
-      padding: 0;
-      text-align: left;
-    }
+  max-width: 700px;
+  margin: 6rem auto 4rem auto;
+  padding: 0 1rem;
+  text-align: left;
+}
+
+@media (max-width: 600px) {
+  .site-title {
+    font-size: 1.6rem;
+    margin-top: 1rem;
+  }
+
+  header {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .content {
+    margin-top: 4rem;
+    padding: 0 1rem;
+  }
+}
+
 
     .content p {
       line-height: 2;
