@@ -30,11 +30,19 @@
     }
 
     .site-title {
-      flex: 1;
-      text-align: center;
-      font-size: 2rem;
-      font-weight: 400;
-    }
+  flex: 1;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 400;
+  margin-top: 0; /* Valor para desktop */
+}
+
+@media (max-width: 600px) {
+  .site-title {
+    margin-top: 1.5rem; /* Ajuste solo en mobile */
+  }
+}
+
 
     .site-title a {
       text-decoration: none;
