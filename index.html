@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lucia Maisano</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f9f9f9;
+      color: #111;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 2rem;
+      background: #f9f9f9;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .site-title {
+      flex: 1;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 400;
+    }
+
+    .site-title a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: space-between;
+      flex: 1;
+      font-size: 1rem;
+    }
+
+    .nav-links a {
+      color: #111;
+      text-decoration: none;
+      font-weight: 300;
+    }
+
+    .nav-links a:hover {
+      text-decoration: underline;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 4rem auto;
+      padding: 0 2rem;
+    }
+
+    .project {
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .project img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .project:hover img {
+      transform: scale(1.03);
+    }
+
+    .project-number {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 300;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.9);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal img {
+      max-width: 90%;
+      max-height: 90%;
+    }
+
+    .modal .nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 3rem;
+      color: white;
+      cursor: pointer;
+      user-select: none;
+      padding: 0 1rem;
+    }
+
+    .modal .prev {
+      left: 10px;
+    }
+
+    .modal .next {
+      right: 10px;
+    }
+
+    .modal .close {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 2rem;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav-links">
+      <a href="information.html">Information</a>
+    </div>
+    <div class="site-title"><a href="index.html">Lucia Maisano</a></div>
+    <div class="nav-links" style="justify-content: flex-end;">
+      <a href="https://www.instagram.com/elemaisano" target="_blank">Instagram</a>
+    </div>
+  </header>
+
+  <div class="gallery" id="gallery">
+  <div class="project" onclick="openModal(0)">
+    <img src="lu-01.jpg" alt="Proyecto 1">
+    <div class="project-number">1.</div>
+  </div>
+  <div class="project" onclick="openModal(1)">
+    <img src="lu-02.jpg" alt="Proyecto 2">
+    <div class="project-number">2.</div>
+  </div>
+  <div class="project" onclick="openModal(2)">
+    <img src="lu-03.jpg" alt="Proyecto 3">
+    <div class="project-number">3.</div>
+  </div>
+  <div class="project" onclick="openModal(3)">
+    <img src="lu-04.jpg" alt="Proyecto 4">
+    <div class="project-number">4.</div>
+  </div>
+  <div class="project" onclick="openModal(4)">
+    <img src="lu-05.jpg" alt="Proyecto 5">
+    <div class="project-number">5.</div>
+  </div>
+  <div class="project" onclick="openModal(5)">
+    <img src="lu-06.jpg" alt="Proyecto 6">
+    <div class="project-number">6.</div>
+  </div>
+  <div class="project" onclick="openModal(6)">
+    <img src="lu-07.jpg" alt="Proyecto 7">
+    <div class="project-number">7.</div>
+  </div>
+  <div class="project" onclick="openModal(7)">
+    <img src="lu-08.jpg" alt="Proyecto 8">
+    <div class="project-number">8.</div>
+  </div>
+  <div class="project" onclick="openModal(8)">
+    <img src="lu-09.jpg" alt="Proyecto 9">
+    <div class="project-number">9.</div>
+  </div>
+  <div class="project" onclick="openModal(9)">
+    <img src="lu-10.jpg" alt="Proyecto 10">
+    <div class="project-number">10.</div>
+  </div>
+  <div class="project" onclick="openModal(10)">
+    <img src="lu-29.jpg" alt="Proyecto 11">
+    <div class="project-number">11.</div>
+  </div>
+  <div class="project" onclick="openModal(11)">
+    <img src="lu-30.jpg" alt="Proyecto 12">
+    <div class="project-number">12.</div>
+  </div>
+</div>
+    <!-- Agregá más proyectos siguiendo el patrón -->
+  </div>
+
+  <div class="modal" id="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <span class="nav prev" onclick="prevImage()">&#10094;</span>
+    <img id="modal-img" src="" alt="Imagen ampliada">
+    <span class="nav next" onclick="nextImage()">&#10095;</span>
+  </div>
+
+ <!-- Reemplazá esto en tu <script> -->
+<script>
+  const images = [
+    "lu-01.jpg", "lu-02.jpg", "lu-03.jpg", "lu-04.jpg", "lu-05.jpg",
+    "lu-06.jpg", "lu-07.jpg", "lu-08.jpg", "lu-09.jpg", "lu-10.jpg",
+    "lu-29.jpg", "lu-30.jpg"
+  ];
+
+  let currentIndex = 0;
+  const modal = document.getElementById('modal');
+  const modalImg = document.getElementById('modal-img');
+
+  function openModal(index) {
+    currentIndex = index;
+    modal.style.display = 'flex';
+    modalImg.src = images[currentIndex];
+  }
+
+  function closeModal() {
+    modal.style.display = 'none';
+  }
+
+  function nextImage() {
+    currentIndex = (currentIndex + 1) % images.length;
+    modalImg.src = images[currentIndex];
+  }
+
+  function prevImage() {
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    modalImg.src = images[currentIndex];
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (modal.style.display === 'flex') {
+      if (e.key === 'ArrowRight') nextImage();
+      if (e.key === 'ArrowLeft') prevImage();
+      if (e.key === 'Escape') closeModal();
+    }
+  });
+</script>
+</body>
+</html>
