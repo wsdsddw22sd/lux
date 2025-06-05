@@ -1,367 +1,585 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Lucia Maisano</title>
+
   <link rel="icon" href="/favicon.png" type="image/png">
+
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
   <style>
+
     * {
+
       margin: 0;
+
       padding: 0;
+
       box-sizing: border-box;
+
     }
+
+
 
     body {
+
       font-family: 'Inter', sans-serif;
+
       background: #f9f9f9;
+
       color: #111;
+
     }
+
+
 
     header {
+
       display: flex;
+
       justify-content: space-between; /* Distribuye el espacio entre los elementos */
+
       align-items: baseline; /* <-- ¡CAMBIO CLAVE AQUÍ! Alinea los elementos por su línea de base */
+
       padding: 1.5rem 2rem; /* Padding para desktop */
+
       background: #f9f9f9;
+
       position: sticky;
+
       top: 0;
+
       z-index: 1000;
+
     }
+
+
 
     .site-title {
+
       flex-grow: 1; /* Permite que el título ocupe el espacio disponible */
+
       text-align: center; /* Centra el título */
+
       font-size: 2rem;
+
       font-weight: 400;
+
       margin: 0; /* Asegura que no haya márgenes extra */
+
       white-space: nowrap; /* Evita que el texto del título salte de línea */
+
       overflow: hidden; /* Oculta el texto que se desborda */
+
       text-overflow: ellipsis; /* Añade puntos suspensivos si el texto se trunca */
+
       min-width: 0; /* Permite que el elemento se encoja más allá de su contenido si es necesario */
+
       padding: 0 1rem; /* Añade un poco de padding para que el texto no esté pegado a los enlaces */
+
     }
+
+
 
     .site-title a {
+
       text-decoration: none;
+
       color: inherit;
+
     }
+
+
 
     .nav-links {
+
       display: flex;
+
       font-size: 1rem;
+
       flex-shrink: 0; /* Evita que los enlaces se encojan si hay poco espacio */
+
     }
+
+
 
     /* Estos márgenes automáticos ya no son tan estrictamente necesarios con baseline, pero pueden ayudar a la distribución */
+
     .nav-links:first-child {
+
       /* margin-right: auto; */
+
     }
+
+
 
     .nav-links:last-child {
+
       /* margin-left: auto; */
+
     }
+
+
 
     .nav-links a {
+
       color: #111;
+
       text-decoration: none;
+
       font-weight: 300;
+
       padding: 0 0.5rem; /* Pequeño padding para los enlaces */
+
     }
+
+
 
     .nav-links a:hover {
+
       text-decoration: underline;
+
     }
+
+
 
     /* Media queries para móviles */
+
     @media (max-width: 600px) {
+
       header {
+
         padding: 1rem 1rem; /* Ajusta el padding para móviles */
+
       }
+
+
 
       .site-title {
+
         font-size: 1.4rem; /* Reduce el tamaño de la fuente para móviles */
+
         padding: 0 0.5rem; /* Reduce el padding en móvil */
+
       }
 
+
+
       .nav-links a {
+
         font-size: 0.9rem; /* Reduce el tamaño de la fuente de los enlaces para móviles */
+
         padding: 0 0.3rem; /* Reduce el padding de los enlaces en móvil */
+
       }
+
     }
+
+
+
 
 
     .gallery {
+
       display: grid;
+
       grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+
       gap: 1rem;
+
       max-width: 1200px;
+
       margin: 2rem auto;
+
       padding: 0 0.5rem;
+
     }
+
+
 
     @media (min-width: 768px) {
+
       .gallery {
+
         grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+
         gap: 2rem;
+
       }
+
     }
+
+
 
     .project {
+
       cursor: pointer;
+
       text-align: left;
+
     }
+
+
 
     .project img {
+
       width: 100%;
+
       height: auto;
+
       object-fit: cover;
+
       transition: transform 0.3s ease;
+
       border: 1px solid #ccc;
+
       border-radius: 0;
+
     }
+
+
 
     .project:hover img {
+
       transform: scale(1.03);
+
     }
+
+
 
     .project-number {
+
       margin-top: 0.5rem;
+
       font-size: 0.9rem;
+
       font-weight: 300;
+
     }
+
+
 
     /* Modal */
+
     .modal {
+
       display: none;
+
       position: fixed;
+
       z-index: 2000;
+
       left: 0;
+
       top: 0;
+
       width: 100vw;
+
       height: 100vh;
+
       background-color: rgba(0, 0, 0, 0.9);
+
       justify-content: center;
+
       align-items: center;
+
     }
+
+
 
     .modal img {
+
       max-width: 90%;
+
       max-height: 90%;
+
     }
+
+
 
     .modal .nav {
+
       position: absolute;
+
       top: 50%;
+
       transform: translateY(-50%);
+
       font-size: 3rem;
+
       color: white;
+
       cursor: pointer;
+
       user-select: none;
+
       padding: 0 1rem;
+
     }
+
+
 
     .modal .prev {
+
       left: 10px;
+
     }
+
+
 
     .modal .next {
+
       right: 10px;
+
     }
+
+
 
     .modal .close {
+
       position: absolute;
+
       top: 20px;
+
       right: 30px;
+
       font-size: 2rem;
+
       color: white;
+
       cursor: pointer;
+
     }
+
   </style>
+
 </head>
+
 <body>
+
   <header>
+
     <div class="nav-links">
+
       <a href="information.html">Información</a>
+
     </div>
+
     <div class="site-title"><a href="index.html">Lucia Maisano</a></div>
+
     <div class="nav-links">
+
       <a href="https://www.instagram.com/elemaisano" target="_blank">Instagram</a>
+
     </div>
+
   </header>
 
+
+
   <div class="gallery" id="gallery">
+
     <div class="project" onclick="openModal(0)">
+
       <img src="lu-01.jpg" alt="Proyecto 1">
+
       <div class="project-number">1.</div>
+
     </div>
+
     <div class="project" onclick="openModal(1)">
+
       <img src="lu-02.jpg" alt="Proyecto 2">
+
       <div class="project-number">2.</div>
+
     </div>
+
     <div class="project" onclick="openModal(2)">
+
       <img src="lu-03.jpg" alt="Proyecto 3">
+
       <div class="project-number">3.</div>
+
     </div>
+
     <div class="project" onclick="openModal(3)">
+
       <img src="lu-04.jpg" alt="Proyecto 4">
+
       <div class="project-number">4.</div>
+
     </div>
+
     <div class="project" onclick="openModal(4)">
+
       <img src="lu-05.jpg" alt="Proyecto 5">
+
       <div class="project-number">5.</div>
+
     </div>
+
     <div class="project" onclick="openModal(5)">
+
       <img src="lu-06.jpg" alt="Proyecto 6">
+
       <div class="project-number">6.</div>
+
     </div>
+
     <div class="project" onclick="openModal(6)">
+
       <img src="lu-07.jpg" alt="Proyecto 7">
+
       <div class="project-number">7.</div>
+
     </div>
+
     <div class="project" onclick="openModal(7)">
+
       <img src="lu-08.jpg" alt="Proyecto 8">
+
       <div class="project-number">8.</div>
+
     </div>
+
     <div class="project" onclick="openModal(8)">
+
       <img src="lu-09.jpg" alt="Proyecto 9">
+
       <div class="project-number">9.</div>
+
     </div>
+
     <div class="project" onclick="openModal(9)">
+
       <img src="lu-10.jpg" alt="Proyecto 10">
+
       <div class="project-number">10.</div>
+
     </div>
-        <div class="project" onclick="openModal(10)">
-      <img src="lu-11.jpg" alt="Proyecto 11">
+
+    <div class="project" onclick="openModal(10)">
+
+      <img src="lu-29.jpg" alt="Proyecto 11">
+
       <div class="project-number">11.</div>
+
     </div>
+
     <div class="project" onclick="openModal(11)">
-      <img src="lu-12.jpg" alt="Proyecto 12">
+
+      <img src="lu-30.jpg" alt="Proyecto 12">
+
       <div class="project-number">12.</div>
+
     </div>
-    <div class="project" onclick="openModal(12)">
-      <img src="lu-13.jpg" alt="Proyecto 13">
-      <div class="project-number">13.</div>
-    </div>
-    <div class="project" onclick="openModal(13)">
-      <img src="lu-14.jpg" alt="Proyecto 14">
-      <div class="project-number">14.</div>
-    </div>
-    <div class="project" onclick="openModal(14)">
-      <img src="lu-15.jpg" alt="Proyecto 15">
-      <div class="project-number">15.</div>
-    </div>
-    <div class="project" onclick="openModal(15)">
-      <img src="lu-16.jpg" alt="Proyecto 16">
-      <div class="project-number">16.</div>
-    </div>
-    <div class="project" onclick="openModal(16)">
-      <img src="lu-17.jpg" alt="Proyecto 17">
-      <div class="project-number">17.</div>
-    </div>
-    <div class="project" onclick="openModal(17)">
-      <img src="lu-18.jpg" alt="Proyecto 18">
-      <div class="project-number">18.</div>
-    </div>
-    <div class="project" onclick="openModal(18)">
-      <img src="lu-19.jpg" alt="Proyecto 19">
-      <div class="project-number">19.</div>
-    </div>
-    <div class="project" onclick="openModal(19)">
-      <img src="lu-20.jpg" alt="Proyecto 20">
-      <div class="project-number">20.</div>
-    </div>
-    <div class="project" onclick="openModal(20)">
-      <img src="lu-21.jpg" alt="Proyecto 21">
-      <div class="project-number">21.</div>
-    </div>
-    <div class="project" onclick="openModal(21)">
-      <img src="lu-22.jpg" alt="Proyecto 22">
-      <div class="project-number">22.</div>
-    </div>
-    <div class="project" onclick="openModal(22)">
-      <img src="lu-23.jpg" alt="Proyecto 23">
-      <div class="project-number">23.</div>
-    </div>
-    <div class="project" onclick="openModal(23)">
-      <img src="lu-24.jpg" alt="Proyecto 24">
-      <div class="project-number">24.</div>
-    </div>
-    <div class="project" onclick="openModal(24)">
-      <img src="lu-25.jpg" alt="Proyecto 25">
-      <div class="project-number">25.</div>
-    </div>
-    <div class="project" onclick="openModal(25)">
-      <img src="lu-26.jpg" alt="Proyecto 26">
-      <div class="project-number">26.</div>
-    </div>
-    <div class="project" onclick="openModal(26)">
-      <img src="lu-27.jpg" alt="Proyecto 27">
-      <div class="project-number">27.</div>
-    </div>
-    <div class="project" onclick="openModal(27)">
-      <img src="lu-28.jpg" alt="Proyecto 28">
-      <div class="project-number">28.</div>
-    </div>
-        <div class="project" onclick="openModal(28)">       <img src="lu-29.jpg" alt="Proyecto 29">
-      <div class="project-number">29.</div>
-    </div>
-    <div class="project" onclick="openModal(29)">       <img src="lu-30.jpg" alt="Proyecto 30">
-      <div class="project-number">30.</div>
-    </div>
+
   </div>
+
+  </div>
+
+
 
   <div class="modal" id="modal">
+
     <span class="close" onclick="closeModal()">&times;</span>
+
     <span class="nav prev" onclick="prevImage()">&#10094;</span>
+
     <img id="modal-img" src="" alt="Imagen ampliada">
+
     <span class="nav next" onclick="nextImage()">&#10095;</span>
+
   </div>
 
+
+
   <script>
+
     const images = [
+
       "lu-01.jpg", "lu-02.jpg", "lu-03.jpg", "lu-04.jpg", "lu-05.jpg",
+
       "lu-06.jpg", "lu-07.jpg", "lu-08.jpg", "lu-09.jpg", "lu-10.jpg",
-      // Nuevas imágenes añadidas aquí, manteniendo el orden numérico
-      "lu-11.jpg", "lu-12.jpg", "lu-13.jpg", "lu-14.jpg", "lu-15.jpg",
-      "lu-16.jpg", "lu-17.jpg", "lu-18.jpg", "lu-19.jpg", "lu-20.jpg",
-      "lu-21.jpg", "lu-22.jpg", "lu-23.jpg", "lu-24.jpg", "lu-25.jpg",
-      "lu-26.jpg", "lu-27.jpg", "lu-28.jpg",
+
       "lu-29.jpg", "lu-30.jpg"
+
     ];
 
+
+
     let currentIndex = 0;
+
     const modal = document.getElementById('modal');
+
     const modalImg = document.getElementById('modal-img');
 
+
+
     function openModal(index) {
+
       currentIndex = index;
+
       modal.style.display = 'flex';
+
       modalImg.src = images[currentIndex];
+
     }
+
+
 
     function closeModal() {
+
       modal.style.display = 'none';
+
     }
+
+
 
     function nextImage() {
+
       currentIndex = (currentIndex + 1) % images.length;
+
       modalImg.src = images[currentIndex];
+
     }
+
+
 
     function prevImage() {
+
       currentIndex = (currentIndex - 1 + images.length) % images.length;
+
       modalImg.src = images[currentIndex];
+
     }
 
+
+
     document.addEventListener('keydown', function (e) {
+
       if (modal.style.display === 'flex') {
+
         if (e.key === 'ArrowRight') nextImage();
+
         if (e.key === 'ArrowLeft') prevImage();
+
         if (e.key === 'Escape') closeModal();
+
       }
+
     });
+
   </script>
+
 </body>
+
 </html>
