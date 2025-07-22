@@ -274,12 +274,133 @@
       padding: 2rem;
       color: #666;
     }
+
+    /* Information modal */
+    .info-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+      z-index: 3000;
+      display: flex;
+      align-items: flex-end;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .info-modal.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .info-content {
+      background: #f9f9f9;
+      width: 100%;
+      max-height: 85vh;
+      border-radius: 20px 20px 0 0;
+      overflow-y: auto;
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      position: relative;
+    }
+
+    .info-modal.show .info-content {
+      transform: translateY(0);
+    }
+
+    .info-header {
+      position: sticky;
+      top: 0;
+      background: #f9f9f9;
+      padding: 1rem;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 20px 20px 0 0;
+    }
+
+    .drag-handle {
+      width: 40px;
+      height: 4px;
+      background: #ccc;
+      border-radius: 2px;
+      margin: 0 auto 1rem auto;
+      cursor: grab;
+    }
+
+    .info-close {
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #666;
+      background: none;
+      border: none;
+      padding: 0.5rem;
+      border-radius: 50%;
+      transition: background 0.2s ease;
+    }
+
+    .info-close:hover {
+      background: #eee;
+    }
+
+    .info-body {
+      padding: 0 2rem 2rem 2rem;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .info-body h1 {
+      font-size: 1.5rem;
+      font-weight: 400;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .info-body p {
+      line-height: 2;
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+      font-weight: 300;
+      white-space: pre-line;
+    }
+
+    @media (min-width: 768px) {
+      .info-modal {
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .info-content {
+        width: 90%;
+        max-width: 800px;
+        max-height: 90vh;
+        border-radius: 20px;
+        transform: scale(0.9) translateY(50px);
+      }
+      
+      .info-modal.show .info-content {
+        transform: scale(1) translateY(0);
+      }
+      
+      .info-header {
+        border-radius: 20px 20px 0 0;
+      }
+      
+      .drag-handle {
+        display: none;
+      }
+    }
   </style>
 </head>
 <body>
   <header>
     <div class="nav-links">
-      <a href="information.html">Información</a>
+      <a href="#" onclick="openInfoModal()">Información</a>
     </div>
     <div class="site-title"><a href="#" onclick="location.reload()">Lucia Maisano</a></div>
     <div class="nav-links">
@@ -296,6 +417,43 @@
     <span class="nav prev" onclick="prevImage()">&#10094;</span>
     <img id="modal-img" src="" alt="Imagen ampliada">
     <span class="nav next" onclick="nextImage()">&#10095;</span>
+  </div>
+
+  <div class="info-modal" id="infoModal">
+    <div class="info-content">
+      <div class="info-header">
+        <div class="drag-handle"></div>
+        <h1>Información</h1>
+        <button class="info-close" onclick="closeInfoModal()">&times;</button>
+      </div>
+      <div class="info-body">
+        <p>Catamarca, Argentina.
+1989
+
+Soy Lucia Maisano, Argentina.
+Estudié Arte en la UNA 
+No sé si eso me convierte en artista o en alguien que hace arte.
+
+Las bios me parecen raras.
+Los CV me parecen raros también.
+
+Esta página es mi croquis, un cambio constante.
+
+Me gustan las palabras como punto de partida.
+La búsqueda de mis obras es encontrar el formato visual de las palabras, qué significan, cómo se construyen, a qué remiten.
+Cómo suenan visualmente y cómo se buscan / desarman en la forma.
+
+Un proceso.
+Una palabra que aparece como un pensamiento efímero.
+Una palabra que encuentra forma y solidez
+Una solidez que se desvanece en la forma.
+Una forma que contiene una historia, un proceso.
+Una palabra y una forma que se vuelven a convertir en la nada.
+
+Hoy subo las obras más recientes, las que quiero compartir.
+Vuelvan a entrar mañana, porque, quizás, todo esto pueda cambiar, como las palabras que están acá.</p>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -415,8 +573,33 @@
       modalImg.alt = `Proyecto ${currentIndex + 1}`;
     }
 
-    function showInfo() {
-      // Function removed - now using direct link to information.html  
+    // Info modal functions
+    let infoTouchStartY = 0;
+    let infoTouchEndY = 0;
+    const infoModal = document.getElementById('infoModal');
+
+    function openInfoModal() {
+      infoModal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeInfoModal() {
+      infoModal.classList.remove('show');
+      document.body.style.overflow = 'auto';
+    }
+
+    function handleInfoTouchStart(e) {
+      infoTouchStartY = e.changedTouches[0].screenY;
+    }
+
+    function handleInfoTouchEnd(e) {
+      infoTouchEndY = e.changedTouches[0].screenY;
+      const diffY = infoTouchEndY - infoTouchStartY;
+      
+      // Close modal if swipe down is significant
+      if (diffY > 100) {
+        closeInfoModal();
+      }
     }
 
     // Event listeners
@@ -468,6 +651,25 @@
     // Add touch event listeners to modal
     modal.addEventListener('touchstart', handleTouchStart, { passive: true });
     modal.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+    // Add touch event listeners for info modal
+    const infoContent = document.querySelector('.info-content');
+    infoContent.addEventListener('touchstart', handleInfoTouchStart, { passive: true });
+    infoContent.addEventListener('touchend', handleInfoTouchEnd, { passive: true });
+
+    // Close info modal when clicking backdrop
+    infoModal.addEventListener('click', function(e) {
+      if (e.target === infoModal) {
+        closeInfoModal();
+      }
+    });
+
+    // Close info modal with Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && infoModal.classList.contains('show')) {
+        closeInfoModal();
+      }
+    });
 
     // Initialize gallery when page loads
     document.addEventListener('DOMContentLoaded', generateGallery);
