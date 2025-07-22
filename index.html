@@ -86,11 +86,19 @@
 
     .gallery {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
       gap: 1rem;
       max-width: 1200px;
       margin: 2rem auto;
       padding: 0 0.5rem;
+    }
+
+    @media (min-width: 480px) {
+      .gallery {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 1.5rem;
+        padding: 0 1rem;
+      }
     }
 
     @media (min-width: 768px) {
@@ -104,11 +112,25 @@
     .project {
       cursor: pointer;
       text-align: left;
-      transition: transform 0.3s ease;
+      transition: transform 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    .project:hover {
-      transform: translateY(-2px);
+    /* Touch-friendly active state */
+    .project:active {
+      transform: scale(0.95);
+    }
+
+    /* Hover effects for desktop only */
+    @media (hover: hover) and (pointer: fine) {
+      .project:hover {
+        transform: translateY(-2px);
+      }
+      
+      .project:hover img {
+        transform: scale(1.03);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      }
     }
 
     .project img {
@@ -126,9 +148,10 @@
       background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
     }
 
-    .project:hover img {
-      transform: scale(1.03);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    /* Touch feedback for mobile */
+    .project:active img {
+      transform: scale(0.98);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     }
 
     .project-number {
@@ -151,22 +174,39 @@
 
     /* Modal */
     .modal {
-      display: none;
+      display: flex;
       position: fixed;
       z-index: 2000;
       left: 0;
       top: 0;
       width: 100vw;
       height: 100vh;
-      background-color: rgba(0, 0, 0, 0.9);
+      background-color: rgba(0, 0, 0, 0);
+      backdrop-filter: blur(0px);
       justify-content: center;
       align-items: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s ease, background-color 0.4s ease, backdrop-filter 0.4s ease;
+    }
+
+    .modal.show {
+      opacity: 1;
+      visibility: visible;
+      background-color: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(5px);
     }
 
     .modal img {
       max-width: 90%;
       max-height: 90%;
       object-fit: contain;
+      transform: scale(0.8);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .modal.show img {
+      transform: scale(1);
     }
 
     .modal .nav {
@@ -273,6 +313,13 @@
     const modalImg = document.getElementById('modal-img');
     const gallery = document.getElementById('gallery');
 
+    // Touch/swipe handling variables
+    let touchStartX = 0;
+    let touchEndX = 0;
+    let touchStartY = 0;
+    let touchEndY = 0;
+    const minSwipeDistance = 50;
+
     // Generate gallery items
     function generateGallery() {
       gallery.innerHTML = '';
@@ -282,9 +329,48 @@
         projectDiv.onclick = () => openModal(index);
         
         const img = document.createElement('img');
-        img.src = imageSrc;
+        
+        // Create responsive image with WebP support
+        const picture = document.createElement('picture');
+        
+        // WebP sources for different screen sizes
+        const sourceWebpLarge = document.createElement('source');
+        sourceWebpLarge.media = '(min-width: 768px)';
+        sourceWebpLarge.srcset = `webp/large/${imageSrc.replace('.jpg', '.webp')}`;
+        sourceWebpLarge.type = 'image/webp';
+        
+        const sourceWebpMedium = document.createElement('source');
+        sourceWebpMedium.media = '(min-width: 480px)';
+        sourceWebpMedium.srcset = `webp/medium/${imageSrc.replace('.jpg', '.webp')}`;
+        sourceWebpMedium.type = 'image/webp';
+        
+        const sourceWebpSmall = document.createElement('source');
+        sourceWebpSmall.srcset = `webp/small/${imageSrc.replace('.jpg', '.webp')}`;
+        sourceWebpSmall.type = 'image/webp';
+        
+        // JPEG fallbacks
+        const sourceJpegLarge = document.createElement('source');
+        sourceJpegLarge.media = '(min-width: 768px)';
+        sourceJpegLarge.srcset = `optimized/large/${imageSrc}`;
+        sourceJpegLarge.type = 'image/jpeg';
+        
+        const sourceJpegMedium = document.createElement('source');
+        sourceJpegMedium.media = '(min-width: 480px)';
+        sourceJpegMedium.srcset = `optimized/medium/${imageSrc}`;
+        sourceJpegMedium.type = 'image/jpeg';
+        
+        // Fallback img element
+        img.src = `optimized/small/${imageSrc}`;
         img.alt = `Proyecto ${index + 1}`;
         img.loading = 'lazy';
+        
+        // Add all sources to picture element
+        picture.appendChild(sourceWebpLarge);
+        picture.appendChild(sourceWebpMedium);
+        picture.appendChild(sourceWebpSmall);
+        picture.appendChild(sourceJpegLarge);
+        picture.appendChild(sourceJpegMedium);
+        picture.appendChild(img);
         
         // Handle image load errors
         img.onerror = function() {
@@ -296,7 +382,7 @@
         numberDiv.className = 'project-number';
         numberDiv.textContent = `${index + 1}.`;
         
-        projectDiv.appendChild(img);
+        projectDiv.appendChild(picture);
         projectDiv.appendChild(numberDiv);
         gallery.appendChild(projectDiv);
       });
@@ -304,26 +390,28 @@
 
     function openModal(index) {
       currentIndex = index;
-      modal.style.display = 'flex';
-      modalImg.src = images[currentIndex];
+      modalImg.src = `optimized/large/${images[currentIndex]}`;
       modalImg.alt = `Proyecto ${currentIndex + 1}`;
       document.body.style.overflow = 'hidden'; // Prevent background scrolling
+      
+      // Trigger transition
+      modal.classList.add('show');
     }
 
     function closeModal() {
-      modal.style.display = 'none';
+      modal.classList.remove('show');
       document.body.style.overflow = 'auto'; // Restore scrolling
     }
 
     function nextImage() {
       currentIndex = (currentIndex + 1) % images.length;
-      modalImg.src = images[currentIndex];
+      modalImg.src = `optimized/large/${images[currentIndex]}`;
       modalImg.alt = `Proyecto ${currentIndex + 1}`;
     }
 
     function prevImage() {
       currentIndex = (currentIndex - 1 + images.length) % images.length;
-      modalImg.src = images[currentIndex];
+      modalImg.src = `optimized/large/${images[currentIndex]}`;
       modalImg.alt = `Proyecto ${currentIndex + 1}`;
     }
 
@@ -333,7 +421,7 @@
 
     // Event listeners
     document.addEventListener('keydown', function (e) {
-      if (modal.style.display === 'flex') {
+      if (modal.classList.contains('show')) {
         if (e.key === 'ArrowRight') nextImage();
         if (e.key === 'ArrowLeft') prevImage();
         if (e.key === 'Escape') closeModal();
@@ -346,6 +434,40 @@
         closeModal();
       }
     });
+
+    // Touch/swipe event handlers
+    function handleTouchStart(e) {
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    }
+
+    function handleTouchEnd(e) {
+      touchEndX = e.changedTouches[0].screenX;
+      touchEndY = e.changedTouches[0].screenY;
+      handleSwipeGesture();
+    }
+
+    function handleSwipeGesture() {
+      const diffX = touchEndX - touchStartX;
+      const diffY = touchEndY - touchStartY;
+      
+      // Only process horizontal swipes (ignore if vertical movement is too large)
+      if (Math.abs(diffY) > Math.abs(diffX)) return;
+      
+      if (Math.abs(diffX) > minSwipeDistance) {
+        if (diffX > 0) {
+          // Swipe right - previous image
+          prevImage();
+        } else {
+          // Swipe left - next image
+          nextImage();
+        }
+      }
+    }
+
+    // Add touch event listeners to modal
+    modal.addEventListener('touchstart', handleTouchStart, { passive: true });
+    modal.addEventListener('touchend', handleTouchEnd, { passive: true });
 
     // Initialize gallery when page loads
     document.addEventListener('DOMContentLoaded', generateGallery);
